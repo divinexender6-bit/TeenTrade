@@ -1,0 +1,631 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+  <meta
+    name="description"
+    content="TeenTrade is a marketplace for discovering and listing products."
+  >
+
+  <title>TeenTrade | Online Marketplace</title>
+
+  <link rel="stylesheet" href="styles.css">
+
+  <style>
+    /* Page layout and visual styling */
+    :root {
+      color-scheme: dark;
+      --background: #080b18;
+      --surface: #11172b;
+      --surface-light: #19213a;
+      --blue: #3984ff;
+      --purple: #9857ff;
+      --text: #f3f5ff;
+      --muted: #a7b0ca;
+      --border: #283454;
+    }
+
+    * {
+      box-sizing: border-box;
+    }
+
+    html {
+      scroll-behavior: smooth;
+    }
+
+    body {
+      margin: 0;
+      background: var(--background);
+      color: var(--text);
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+      line-height: 1.6;
+    }
+
+    button,
+    input,
+    select,
+    textarea {
+      font: inherit;
+    }
+
+    a {
+      color: inherit;
+      text-decoration: none;
+    }
+
+    .navbar {
+      position: sticky;
+      top: 0;
+      z-index: 10;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 20px;
+      padding: 16px 7%;
+      background: rgba(8, 11, 24, 0.96);
+      border-bottom: 1px solid var(--border);
+    }
+
+    .logo {
+      font-size: 1.5rem;
+      font-weight: 800;
+      letter-spacing: -1px;
+    }
+
+    .logo span {
+      color: var(--blue);
+    }
+
+    .nav-links {
+      display: flex;
+      flex-wrap: wrap;
+      align-items: center;
+      gap: 20px;
+    }
+
+    .nav-links a {
+      color: var(--muted);
+    }
+
+    .nav-links a:hover {
+      color: white;
+    }
+
+    .hero {
+      padding: 76px 7% 58px;
+      text-align: center;
+      background:
+        radial-gradient(ellipse at top left, #172b55 0%, transparent 55%),
+        radial-gradient(ellipse at top right, #29154b 0%, transparent 50%);
+    }
+
+    .hero h1 {
+      max-width: 800px;
+      margin: 0 auto 16px;
+      font-size: clamp(2.2rem, 6vw, 4rem);
+      line-height: 1.12;
+    }
+
+    .hero h1 span {
+      color: var(--blue);
+    }
+
+    .hero p {
+      max-width: 620px;
+      margin: 0 auto 28px;
+      color: var(--muted);
+    }
+
+    .button {
+      display: inline-block;
+      padding: 11px 20px;
+      border: 0;
+      border-radius: 9px;
+      background: linear-gradient(110deg, var(--blue), var(--purple));
+      color: white;
+      font-weight: 700;
+      cursor: pointer;
+    }
+
+    .button:hover {
+      filter: brightness(1.12);
+    }
+
+    .button:disabled {
+      opacity: 0.6;
+      cursor: not-allowed;
+    }
+
+    .button-secondary {
+      background: var(--surface-light);
+      border: 1px solid var(--border);
+    }
+
+    .container {
+      width: min(1120px, 88%);
+      margin: 0 auto;
+      padding: 42px 0;
+    }
+
+    .section-heading {
+      margin: 0 0 8px;
+      font-size: 1.9rem;
+    }
+
+    .section-description {
+      margin-top: 0;
+      color: var(--muted);
+    }
+
+    .auth-grid {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 22px;
+    }
+
+    .panel {
+      padding: 24px;
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 16px;
+      box-shadow: 0 12px 32px rgba(0, 0, 0, 0.18);
+    }
+
+    .panel h3 {
+      margin-top: 0;
+    }
+
+    .field {
+      display: flex;
+      flex-direction: column;
+      gap: 7px;
+      margin-bottom: 16px;
+    }
+
+    .field label {
+      font-size: 0.92rem;
+      font-weight: 600;
+    }
+
+    .field input,
+    .field textarea,
+    .field select,
+    .toolbar input,
+    .toolbar select {
+      width: 100%;
+      padding: 12px;
+      color: var(--text);
+      background: #0a1021;
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      outline: none;
+    }
+
+    .field input:focus,
+    .field textarea:focus,
+    .field select:focus,
+    .toolbar input:focus,
+    .toolbar select:focus {
+      border-color: var(--blue);
+    }
+
+    .field textarea {
+      min-height: 105px;
+      resize: vertical;
+    }
+
+    .message {
+      min-height: 24px;
+      margin-bottom: 0;
+      overflow-wrap: anywhere;
+      font-size: 0.9rem;
+    }
+
+    .account-status {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      flex-wrap: wrap;
+      gap: 12px;
+      margin-top: 22px;
+      padding: 15px;
+      background: var(--surface-light);
+      border-radius: 10px;
+    }
+
+    #currentUser {
+      overflow-wrap: anywhere;
+      color: var(--muted);
+    }
+
+    .toolbar {
+      display: grid;
+      grid-template-columns: 2fr 1fr;
+      gap: 12px;
+      margin: 24px 0;
+    }
+
+    .products-grid {
+      display: grid;
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+      gap: 22px;
+    }
+
+    .product-card {
+      min-width: 0;
+      overflow: hidden;
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 14px;
+      transition: transform 0.2s, border-color 0.2s;
+    }
+
+    .product-card:hover {
+      transform: translateY(-4px);
+      border-color: var(--blue);
+    }
+
+    .product-image {
+      display: block;
+      width: 100%;
+      height: 210px;
+      object-fit: cover;
+      background: var(--surface-light);
+    }
+
+    .product-image.image-unavailable {
+      height: 100px;
+      object-fit: contain;
+    }
+
+    .product-details {
+      padding: 18px;
+    }
+
+    .product-details h3 {
+      margin: 0 0 8px;
+      overflow-wrap: anywhere;
+    }
+
+    .product-price {
+      color: #75a9ff;
+      font-size: 1.25rem;
+      font-weight: 800;
+    }
+
+    .product-category {
+      display: inline-block;
+      padding: 4px 9px;
+      background: #202b49;
+      border-radius: 6px;
+      color: #c3d5ff;
+      font-size: 0.82rem;
+    }
+
+    .product-description {
+      color: var(--muted);
+      overflow-wrap: anywhere;
+    }
+
+    .delete-product {
+      padding: 9px 12px;
+      border: 1px solid #a53f5b;
+      border-radius: 7px;
+      background: transparent;
+      color: #ff9db1;
+      cursor: pointer;
+    }
+
+    .delete-product:hover {
+      background: #391a2a;
+    }
+
+    .empty-products {
+      grid-column: 1 / -1;
+      padding: 32px 16px;
+      text-align: center;
+      color: var(--muted);
+      background: var(--surface);
+      border: 1px dashed var(--border);
+      border-radius: 12px;
+    }
+
+    .note {
+      padding: 13px;
+      margin: 12px 0 18px;
+      border-left: 3px solid var(--blue);
+      background: #111d35;
+      color: var(--muted);
+      font-size: 0.9rem;
+    }
+
+    footer {
+      padding: 26px 7%;
+      text-align: center;
+      color: var(--muted);
+      border-top: 1px solid var(--border);
+    }
+
+    @media (max-width: 760px) {
+      .navbar {
+        align-items: flex-start;
+        flex-direction: column;
+      }
+
+      .auth-grid {
+        grid-template-columns: 1fr;
+      }
+
+      .products-grid {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+      }
+
+      .hero {
+        padding-top: 54px;
+      }
+    }
+
+    @media (max-width: 480px) {
+      .products-grid,
+      .toolbar {
+        grid-template-columns: 1fr;
+      }
+
+      .product-image {
+        height: 230px;
+      }
+    }
+  </style>
+</head>
+
+<body>
+
+  <header class="navbar">
+    <a class="logo" href="#home">Teen<span>Trade</span></a>
+
+    <nav class="nav-links" aria-label="Main navigation">
+      <a href="#home">Home</a>
+      <a href="#products">Marketplace</a>
+      <a href="#account">Account</a>
+      <a href="#sell">Sell a product</a>
+    </nav>
+  </header>
+
+  <main>
+    <section class="hero" id="home">
+      <h1>Discover great deals on <span>TeenTrade</span></h1>
+
+      <p>
+        Explore products, discover new finds, and list items
+        for other members of the marketplace.
+      </p>
+
+      <a class="button" href="#products">Explore marketplace</a>
+     
+
+    </section>
+
+    <section class="container" id="account">
+      <h2 class="section-heading">Your account</h2>
+
+      <p class="section-description">
+        Register a new account or log in to manage your listings.
+      </p>
+
+      <div class="auth-grid">
+        <section class="panel">
+          <h3>Login</h3>
+
+          <form id="loginForm">
+            <div class="field">
+              <label for="loginEmail">Email address</label>
+              <input
+                id="loginEmail"
+                name="email"
+                type="email"
+                autocomplete="email"
+                placeholder="you@example.com"
+                required
+              >
+            </div>
+
+            <div class="field">
+              <label for="loginPassword">Password</label>
+              <input
+                id="loginPassword"
+                name="password"
+                type="password"
+                autocomplete="current-password"
+                placeholder="Enter your password"
+                required
+              >
+            </div>
+
+            <button class="button" type="submit">Login</button>
+          </form>
+
+          <p id="authMessage" class="message" role="status" aria-live="polite"></p>
+        </section>
+
+        <section class="panel">
+          <h3>Create an account</h3>
+
+          <form id="registerForm">
+            <div class="field">
+              <label for="registerEmail">Email address</label>
+              <input
+                id="registerEmail"
+                name="email"
+                type="email"
+                autocomplete="email"
+                placeholder="you@example.com"
+                required
+              >
+            </div>
+
+            <div class="field">
+              <label for="registerPassword">Password</label>
+              <input
+                id="registerPassword"
+                name="password"
+                type="password"
+                autocomplete="new-password"
+                minlength="6"
+                placeholder="At least 6 characters"
+                required
+              >
+            </div>
+
+            <button class="button" type="submit">
+              Create account
+            </button>
+          </form>
+        </section>
+      </div>
+
+      <div class="account-status">
+        <span id="currentUser">Checking account status...</span>
+
+        <button
+          id="logoutBtn"
+          class="button button-secondary"
+          type="button"
+          hidden
+        >
+          Logout
+        </button>
+      </div>
+    </section>
+
+    <section class="container" id="sell">
+      <h2 class="section-heading">Sell a product</h2>
+
+      <p class="section-description">
+        Log in to publish your product listing.
+      </p>
+
+      <div class="panel">
+        <form id="productForm" hidden>
+          <div class="field">
+            <label for="productName">Product name</label>
+            <input
+              id="productName"
+              name="name"
+              type="text"
+              maxlength="80"
+              placeholder="Example: School backpack"
+              required
+            >
+          </div>
+
+          <div class="field">
+            <label for="productPrice">Price in Zambian Kwacha (K)</label>
+            <input
+              id="productPrice"
+              name="price"
+              type="number"
+              min="0"
+              step="0.01"
+              placeholder="150"
+              required
+            >
+          </div>
+
+          <div class="field">
+            <label for="productCategory">Category</label>
+
+            <select id="productCategory" name="category" required>
+              <option value="">Choose a category</option>
+              <option value="Electronics">Electronics</option>
+              <option value="Clothing">Clothing</option>
+              <option value="Books">Books</option>
+              <option value="Accessories">Accessories</option>
+              <option value="Home">Home</option>
+              <option value="Sports">Sports</option>
+              <option value="Other">Other</option>
+            </select>
+          </div>
+
+          <div class="field">
+            <label for="productDescription">Description</label>
+            <textarea
+              id="productDescription"
+              name="description"
+              maxlength="1000"
+              placeholder="Describe your product..."
+              required
+            ></textarea>
+          </div>
+
+          <div class="field">
+            <label for="productImageUrl">Product image URL</label>
+            <input
+              id="productImageUrl"
+              name="imageUrl"
+              type="url"
+              placeholder="https://example.com/product.jpg"
+              required
+            >
+          </div>
+
+          <p class="note">
+            Use an image URL you are allowed to share publicly.
+            Do not enter your home address, private phone number,
+            or other sensitive personal information in a listing.
+          </p>
+
+          <button class="button" type="submit">
+            Publish listing
+          </button>
+        </form>
+
+        <p id="productMessage" class="message" role="status" aria-live="polite">
+          Log in to create a listing.
+        </p>
+      </div>
+    </section>
+
+    <section class="container" id="products">
+      <h2 class="section-heading">Marketplace</h2>
+
+      <p class="section-description">
+        Browse the latest products listed on TeenTrade.
+      </p>
+
+      <div class="toolbar">
+        <input
+          id="searchInput"
+          type="search"
+          placeholder="Search products..."
+          aria-label="Search products"
+        >
+
+        <select id="categoryFilter" aria-label="Filter by category">
+          <option value="all">All categories</option>
+          <option value="Electronics">Electronics</option>
+          <option value="Clothing">Clothing</option>
+          <option value="Books">Books</option>
+          <option value="Accessories">Accessories</option>
+          <option value="Home">Home</option>
+          <option value="Sports">Sports</option>
+          <option value="Other">Other</option>
+        </select>
+      </div>
+
+      <div id="productsGrid" class="products-grid">
+        <p class="empty-products">Loading marketplace listings...</p>
+      </div>
+    </section>
+  </main>
+
+  <footer>
+    <p>TeenTrade Marketplace</p>
+    <p>Browse responsibly. Arrange exchanges safely with a trusted adult.</p>
+  </footer>
+
+  <script type="module" src="app.js"></script>
+</body>
+</html>

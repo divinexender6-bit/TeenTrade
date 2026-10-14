@@ -1,0 +1,65 @@
+
+rules_version = '2';
+
+service cloud.firestore {
+  match /databases/{database}/documents {
+    match /products/{productId} {
+
+      allow read: if true;
+
+      allow create: if request.auth != null
+        && request.resource.data.keys().hasAll([
+          'title',
+          'category',
+          'description',
+          'price',
+          'imageUrl',
+          'imagePath',
+          'ownerUid',
+          'sellerName',
+          'createdAt'
+        ])
+        && request.resource.data.keys().hasOnly([
+          'title',
+          'category',
+          'description',
+          'price',
+          'imageUrl',
+          'imagePath',
+          'ownerUid',
+          'sellerName',
+          'createdAt'
+        ])
+        && request.resource.data.ownerUid == request.auth.uid
+        && request.resource.data.title is string
+        && request.resource.data.title.size() >= 2
+        && request.resource.data.title.size() <= 70
+        && request.resource.data.description is string
+        && request.resource.data.description.size() >= 5
+        && request.resource.data.description.size() <= 700
+        && request.resource.data.category in [
+          'Electronics',
+          'Fashion',
+          'Books',
+          'Accessories',
+          'Other'
+        ]
+        && request.resource.data.price is number
+        && request.resource.data.price > 0
+        && request.resource.data.price <= 1000000
+        && request.resource.data.imageUrl is string
+        && request.resource.data.imagePath is string
+        && request.resource.data.imagePath.matches(
+          'product-images/' + request.auth.uid + '/.*'
+        )
+        && request.resource.data.sellerName is string
+        && request.resource.data.sellerName.size() <= 30
+        && request.resource.data.createdAt == request.time;
+
+      allow delete: if request.auth != null
+        && resource.data.ownerUid == request.auth.uid;
+
+      allow update: if false;
+    }
+  }
+}
